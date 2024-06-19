@@ -15,6 +15,10 @@ use App\Http\Requests\Auth\RegisterUserRequest;
 
 class AuthController extends Controller
 {
+    public function index ()
+    {
+        return response()->json(['message' => 'Hello world', 200]);
+    }
     public function register (RegisterUserRequest $request)
     {
         $validated = $request->validated();

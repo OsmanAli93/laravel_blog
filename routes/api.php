@@ -13,11 +13,6 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
   ->middleware(['signed'])
   ->name('verification.verify');
 
-Route::get('/test', function (Request $request) {
-    return response()->json([
-        'message' => 'Hello World'
-    ], 200);
-});
 
 
 
@@ -27,6 +22,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout');
     Route::post('/forgot-password', 'forgotPassword')->name('password.reset');
     Route::post('/reset-password', 'resetPassword')->name('password.update');
+});
+
+Route::get('/test', function () {
+    return response()->json(['message' => 'Hello World'], 200);
 });
 
 
