@@ -13,7 +13,7 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
   ->middleware(['signed'])
   ->name('verification.verify');
 
-Route::get('/user', function (Request $request) {
+Route::get('/test', function (Request $request) {
     return response()->json([
         'message' => 'Hello World'
     ], 200);
