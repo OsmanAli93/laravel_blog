@@ -15,10 +15,7 @@ use App\Http\Requests\Auth\RegisterUserRequest;
 
 class AuthController extends Controller
 {
-    public function index ()
-    {
-        return response()->json(['message' => 'Hello world', 200]);
-    }
+
     public function register (RegisterUserRequest $request)
     {
         $validated = $request->validated();
@@ -31,11 +28,16 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
+        $user->profile()->create([
+            'user_id' => $user->id,
+        ]);
+
         $access_token = $user->createToken('access_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Registration Success',
             'access_token' => $access_token,
+            'user' => $user->load('profile')
         ], 201);
     }
 

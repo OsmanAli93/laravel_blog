@@ -4,6 +4,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EmailVerificationController;
 
@@ -14,27 +15,21 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
   ->name('verification.verify');
 
 
-
-
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login');
-    Route::post('/logout', 'logout');
-    Route::post('/forgot-password', 'forgotPassword')->name('password.reset');
-    Route::post('/reset-password', 'resetPassword')->name('password.update');
-});
-
-Route::get('/test', function () {
-    return response()->json(['message' => 'Hello World'], 200);
-});
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
-  Route::post('/logout',   [AuthController::class, 'logout']);
-});
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-Route::get('/user', function (Request $request) {
-  return $request->user();
-})->middleware('auth:sanctum');
+    Route::post('/logout',   [AuthController::class, 'logout']);
+
+    Route::get('/profile/{id}', [ProfileController::class, 'show']);
+    Route::post('/profile/{id}', [ProfileController::class, 'update']);
+});
 
