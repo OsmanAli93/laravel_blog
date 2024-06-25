@@ -44,6 +44,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
         $user = User::with(['profile'])->find($id);
 
         DB::beginTransaction();
@@ -57,7 +58,7 @@ class ProfileController extends Controller
                 File::delete($path);
             }
 
-            $file = $request->file('avatar');
+            $file = $request->file('avatar')[0];
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $file->move(public_path('images/avatars/'), $filename);
@@ -74,7 +75,7 @@ class ProfileController extends Controller
                 File::delete($path);
             }
 
-            $file = $request->file('background_image');
+            $file = $request->file('background_image')[0];
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $file->move(public_path('images/backgrounds/'), $filename);

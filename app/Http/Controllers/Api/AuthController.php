@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +36,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Registration Success',
             'access_token' => $access_token,
-            'user' => $user->load('profile')
+            'user' => $user->with('profile')
         ], 201);
     }
 
