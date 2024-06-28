@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 

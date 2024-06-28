@@ -75,7 +75,7 @@ class ProfileController extends Controller
                 File::delete($path);
             }
 
-            $file = $request->file('background_image')[0];
+            $file = $request->file('background_image');
             $extension = $file->getClientOriginalExtension();
             $filename = time() . '.' . $extension;
             $file->move(public_path('images/backgrounds/'), $filename);

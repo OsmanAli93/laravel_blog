@@ -24,8 +24,10 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return $request->user()->load('profile');
     });
+
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])->middleware(['throttle:6,1']);
 
     Route::post('/logout',   [AuthController::class, 'logout']);
 

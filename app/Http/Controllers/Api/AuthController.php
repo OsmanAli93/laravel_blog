@@ -36,7 +36,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Registration Success',
             'access_token' => $access_token,
-            'user' => $user->with('profile')
+            'user' => $user->load('profile')
         ], 201);
     }
 
@@ -64,7 +64,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Login Successful',
             'access_token' => $access_token,
-            'user' => $user
+            'user' => $user->load('profile')
         ], 200);
     }
 

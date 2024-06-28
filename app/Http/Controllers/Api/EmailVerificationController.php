@@ -10,6 +10,13 @@ use Illuminate\Auth\Events\Verified;
 class EmailVerificationController extends Controller
 {
 
+    public function resend (Request $request)
+    {
+        $request->user()->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'A new verification link has been sent to the email address you provided during registration'], 200);
+    }
+
     public function verify ($id)
     {
         $user = User::findOrFail($id);
@@ -19,9 +26,9 @@ class EmailVerificationController extends Controller
             $user->markEmailAsVerified();
             event(new Verified($user));
 
-            return redirect(url(env('SPA_URL')).'/verified=1');
+            return redirect('http://localhost:3000/email/verify/success');
         }
 
-        return redirect(url(env('SPA_URL')).'/verified=1');
+        return redirect('http://localhost:3000/email/verify/success');
     }
 }
