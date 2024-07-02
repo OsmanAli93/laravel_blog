@@ -10,15 +10,11 @@ use App\Http\Controllers\Api\EmailVerificationController;
 
 
 // Public Routes
-Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-  ->middleware(['signed'])
-  ->name('verification.verify');
-
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.reset');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+Route::patch('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
 
 // Private Routes
@@ -27,6 +23,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         return $request->user()->load('profile');
     });
 
+    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware(['signed'])
+    ->name('verification.verify');
     Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])->middleware(['throttle:6,1']);
 
     Route::post('/logout',   [AuthController::class, 'logout']);

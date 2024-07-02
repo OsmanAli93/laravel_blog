@@ -26,9 +26,9 @@ class EmailVerificationController extends Controller
             $user->markEmailAsVerified();
             event(new Verified($user));
 
-            return redirect('http://localhost:3000/email/verify/success');
+            return redirect('http://localhost:3000/?verified=1');
         }
 
-        return redirect('http://localhost:3000/email/verify/success');
+        return redirect('http://localhost:3000/?verified=1');
     }
 }

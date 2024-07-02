@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         );
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
-            return 'https://localhost:3000/reset-password?token='.$token;
+            return 'http://localhost:3000/auth/reset-password?token='.$token.'&email='.$user->email;
         });
     }
 }

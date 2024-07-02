@@ -25,6 +25,7 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password'])
         ]);
 
+        // Sends verification email to user
         event(new Registered($user));
 
         $user->profile()->create([
@@ -32,11 +33,12 @@ class AuthController extends Controller
         ]);
 
         $access_token = $user->createToken('access_token')->plainTextToken;
+        $user = User::with(['profile'])->where('email', $validated['email'])->first();
 
         return response()->json([
             'message' => 'Registration Success',
             'access_token' => $access_token,
-            'user' => $user->load('profile')
+            'user' => $user
         ], 201);
     }
 
@@ -87,7 +89,7 @@ class AuthController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-                ? response()->json(['status' => $status], 200)
+                ? response()->json(['message' => 'We have emailed you password reset link'], 200)
                 : response()->json(['email' => $status], 400);
     }
 
