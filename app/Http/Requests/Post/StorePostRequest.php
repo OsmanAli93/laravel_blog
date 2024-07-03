@@ -4,14 +4,14 @@ namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterPostRequest extends FormRequest
+class StorePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class RegisterPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'thumbnail' => 'required|image|mimes:png,jpg,jpeg,avif,webp',
+            'title' => 'required|string|unique:posts,title',
+            'description' => 'required|min:50',
+            'message' => 'required|min:255',
         ];
     }
 }
