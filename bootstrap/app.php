@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
+        $middleware->redirectGuestsTo('http://localhost:3000/auth/login');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
