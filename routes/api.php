@@ -5,8 +5,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\EmailVerificationController;
 
 
@@ -33,5 +34,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::get('/profile/{id}', [ProfileController::class, 'show']);
     Route::post('/profile/{id}', [ProfileController::class, 'update']);
+
+    Route::post('/posts', [PostController::class, 'store']);
 });
 

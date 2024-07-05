@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Post;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,12 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::with(['user'])->latests()->paginate(9);
+
+        return response()->json([
+            'message' => 'Data retrived successfully',
+            'posts' => $posts
+        ], 200);
 
     }
 
@@ -24,20 +30,21 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
+
         $validated = $request->validated();
 
         DB::beginTransaction();
 
-        $file = $request->file('thumbnail')[0];
+        $file = $request->file('thumbnail');
         $extension = $file->getClientOriginalExtension();
-        $filename = $request->id . '_' . time() . '.' . $extension;
+        $filename = $request->user()->id . '_' . time() . '.' . $extension;
 
         $request->user()->posts()->create([
             'thumbnail' => $filename,
-            'title' => $validated->title,
-            'slug' => Str::slug($validated->title, '-'),
-            'description' => $validated->description,
-            'message' => $validated->message,
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title'], '-'),
+            'description' => $validated['description'],
+            'message' => $validated['message'],
         ]);
 
         $file->move(public_path('images/thumbnails/'), $filename);
