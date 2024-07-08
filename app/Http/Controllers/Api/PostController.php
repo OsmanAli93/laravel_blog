@@ -16,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['user'])->latests()->paginate(9);
+        $posts = Post::with(['user', 'user.profile'])->latest()->paginate(9);
 
         return response()->json([
             'message' => 'Data retrived successfully',
@@ -60,9 +60,23 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
-        //
+        $post = Post::with(['user', 'user.profile'])->where('slug', $slug)->first();
+
+        if ( $post ) {
+
+            return response()->json([
+                'message' => 'Data retrieved successfully',
+                'post' => $post
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Post not found!'
+        ], 404);
+
+
     }
 
     /**
