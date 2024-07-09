@@ -39,5 +39,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/profile/{id}', [ProfileController::class, 'update']);
 
     Route::post('/posts', [PostController::class, 'store']);
+    Route::post('/posts/{slug}/likes', [PostController::class, 'like']);
+
 });
 

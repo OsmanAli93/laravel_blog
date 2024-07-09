@@ -57,6 +57,26 @@ class PostController extends Controller
 
     }
 
+    public function like (Request $request, string $slug)
+    {
+        $post = Post::where('slug', $slug)->first();
+
+        if ( $post ) {
+
+            $post->likes()->create([
+                'user_id' => $request->user()->id,
+            ]);
+
+            return response()->json([
+                'message' => 'You liked this post'
+            ], 201);
+        }
+
+        return response()->json([
+            'message' => 'Post not found!'
+        ], 404);
+    }
+
     /**
      * Display the specified resource.
      */
