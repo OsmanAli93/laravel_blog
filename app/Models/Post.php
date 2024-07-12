@@ -21,6 +21,11 @@ class Post extends Model
         "message",
     ];
 
+    public function likedBy (User $user)
+    {
+        return $this->likes->contains('user_id', $user->id);
+    }
+
     public function user () : BelongsTo
     {
         return $this->belongsTo(User::class);

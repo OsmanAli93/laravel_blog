@@ -63,6 +63,13 @@ class PostController extends Controller
 
         if ( $post ) {
 
+            if ( $post->likedBy($request->user()) ) {
+
+                return response()->json([
+                    'message' => 'You already liked this post'
+                ], 409);
+            }
+
             $post->likes()->create([
                 'user_id' => $request->user()->id,
             ]);
@@ -82,7 +89,7 @@ class PostController extends Controller
      */
     public function show(string $slug)
     {
-        $post = Post::with(['user', 'user.profile'])->where('slug', $slug)->first();
+        $post = Post::with(['user', 'user.profile', 'likes'])->where('slug', $slug)->first();
 
         if ( $post ) {
 
