@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\PostLikeController;
 use App\Http\Controllers\Api\EmailVerificationController;
 
 
@@ -24,6 +25,7 @@ Route::patch('/reset-password', [AuthController::class, 'resetPassword'])->name(
 
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
+
     Route::get('/user', function (Request $request) {
         return $request->user()->load('profile');
     });
@@ -39,7 +41,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/profile/{id}', [ProfileController::class, 'update']);
 
     Route::post('/posts', [PostController::class, 'store']);
-    Route::post('/posts/{slug}/likes', [PostController::class, 'like']);
+    Route::post('/posts/{slug}/likes', [PostLikeController::class, 'store']);
 
 });
 
