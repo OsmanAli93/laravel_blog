@@ -16,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['user', 'user.profile'])->latest()->paginate(9);
+        $posts = Post::with(['user', 'user.profile', 'likes'])->latest()->paginate(9);
 
         return response()->json([
             'message' => 'Data retrived successfully',
@@ -55,33 +55,6 @@ class PostController extends Controller
             'message' => 'Post successfully created',
         ], 201);
 
-    }
-
-    public function like (Request $request, string $slug)
-    {
-        $post = Post::where('slug', $slug)->first();
-
-        if ( $post ) {
-
-            if ( $post->likedBy($request->user()) ) {
-
-                return response()->json([
-                    'message' => 'You already liked this post'
-                ], 409);
-            }
-
-            $post->likes()->create([
-                'user_id' => $request->user()->id,
-            ]);
-
-            return response()->json([
-                'message' => 'You liked this post'
-            ], 201);
-        }
-
-        return response()->json([
-            'message' => 'Post not found!'
-        ], 404);
     }
 
     /**

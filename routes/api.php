@@ -41,7 +41,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('/profile/{id}', [ProfileController::class, 'update']);
 
     Route::post('/posts', [PostController::class, 'store']);
+
     Route::post('/posts/{slug}/likes', [PostLikeController::class, 'store']);
+    Route::delete('/posts/{slug}/likes', [PostLikeController::class, 'destroy']);
 
 });
 

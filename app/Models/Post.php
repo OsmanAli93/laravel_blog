@@ -21,7 +21,7 @@ class Post extends Model
         "message",
     ];
 
-    public function likedBy (User $user)
+    public function likedByUser (User $user)
     {
         return $this->likes->contains('user_id', $user->id);
     }

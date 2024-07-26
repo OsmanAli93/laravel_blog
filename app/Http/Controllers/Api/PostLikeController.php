@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Notifications\PostLike;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Notification;
+
 
 class PostLikeController extends Controller
 {
@@ -25,11 +28,24 @@ class PostLikeController extends Controller
 
         if ( $post ) {
 
+            if ( $post->likedByUser($request->user()) ) {
+
+                return response()->json(['message' => 'You already liked this post!'], 419);
+            }
+
             $post->likes()->create([
                 'user_id' => $request->user()->id,
             ]);
 
-            return response()->json(['message' => 'You liked this post'], 201);
+            if ( !$post->likes()->onlyTrashed()->where('user_id', $request->user()->id)->count() ) {
+
+                Notification::send($request->user(), new PostLike($post, $request->user()->name));
+            }
+
+            return response()->json([
+                'message' => 'You liked this post',
+                'post' => $post->load(['user', 'user.profile', 'likes'])
+            ], 201);
         }
 
 
@@ -57,8 +73,20 @@ class PostLikeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $slug)
     {
-        //
+        $post = Post::where('slug', $slug)->first();
+
+        if ( $post ) {
+
+            $request->user()->likes()->where('post_id', $post->id)->delete();
+
+            return response()->json([
+                'message' => 'You unlike this post!',
+                'post' => $post->load(['user', 'user.profile', 'likes'])
+            ], 201);
+        }
+
+        return response()->json(['message' => 'Post not foud!'], 404);
     }
 }
