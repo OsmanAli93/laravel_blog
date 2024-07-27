@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PostLikeController;
+use App\Http\Controllers\Api\PostCommentController;
 use App\Http\Controllers\Api\EmailVerificationController;
 
 
@@ -44,6 +45,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     Route::post('/posts/{slug}/likes', [PostLikeController::class, 'store']);
     Route::delete('/posts/{slug}/likes', [PostLikeController::class, 'destroy']);
+
+    Route::post('/posts/{slug}/comments', [PostCommentController::class, 'store']);
 
 });
 
