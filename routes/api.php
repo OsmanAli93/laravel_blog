@@ -18,6 +18,8 @@ use App\Http\Controllers\Api\EmailVerificationController;
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{slug}', [PostController::class, 'show']);
 
+Route::get('/posts/{slug}/comments', [PostCommentController::class, 'show']);
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.reset');
