@@ -24,9 +24,9 @@ class PostCommentController extends Controller
     public function store(Request $request, string $slug)
     {
 
-        $post = Post::where('slug', $slug)->first();
+        $post = Post::where('slug', $slug)->firstOrFail();
 
-        if ( $post ) {
+        if ( $request->has('parent_id') ) {
 
             $post->comments()->create([
                 'user_id' => $request->user()->id,
@@ -35,14 +35,22 @@ class PostCommentController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Comment successfully added'
+                'message' => 'Reply successfully added',
+                'comments' => $post->load(['user', 'user.profile', 'comments.user', 'comments.user.profile', 'comments.replies', 'comments.replies.replies', 'comments.replies.replies.user', 'comments.replies.replies.user.profile', 'comments.replies.user', 'comments.replies.user.profile'])
             ], 201);
         }
 
+        $post->comments()->create([
+            'user_id' => $request->user()->id,
+            'comment' => $request->comment
+        ]);
 
         return response()->json([
-            'message' => 'Post not found!'
-        ], 404);
+            'message' => 'Comment successfully added',
+            'comments' => $post->load(['user', 'user.profile', 'comments.user', 'comments.user.profile', 'comments.replies', 'comments.replies.replies', 'comments.replies.replies.user', 'comments.replies.replies.user.profile', 'comments.replies.user', 'comments.replies.user.profile'])
+        ], 201);
+
+
     }
 
     /**
@@ -50,22 +58,13 @@ class PostCommentController extends Controller
      */
     public function show(string $slug)
     {
-        $post = Post::where('slug', $slug)->first();
 
-        if ( $post ) {
-
-            $comments = $post->comments()->with(['user', 'user.profile'])->where('post_id', $post->id)->latest()->paginate(9);
-
-            return response()->json([
-                'message' => 'Data successfully retrieved',
-                'comments' => $comments
-            ], 200);
-        }
-
+        $comments = Post::with(['user', 'user.profile', 'comments.user', 'comments.user.profile', 'comments.replies', 'comments.replies.replies', 'comments.replies.replies.user', 'comments.replies.replies.user.profile', 'comments.replies.user', 'comments.replies.user.profile'])->where('slug', $slug)->firstOrFail();
 
         return response()->json([
-            'message' => 'Comments not found!'
-        ], 404);
+            'message'=> 'Data successfully retrieved',
+            'comments' => $comments
+        ], 200);
     }
 
     /**
