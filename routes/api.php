@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PostLikeController;
 use App\Http\Controllers\Api\PostCommentController;
@@ -29,16 +30,14 @@ Route::patch('/reset-password', [AuthController::class, 'resetPassword'])->name(
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
-    Route::get('/user', function (Request $request) {
-        return $request->user()->load('profile');
-    });
+    Route::get('/users/{id}', [UserController::class, 'show']);
 
     Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
     ->middleware(['signed'])
     ->name('verification.verify');
     Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])->middleware(['throttle:6,1']);
 
-    Route::post('/logout',   [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/profile/{id}', [ProfileController::class, 'show']);
     Route::post('/profile/{id}', [ProfileController::class, 'update']);
