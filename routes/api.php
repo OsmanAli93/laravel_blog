@@ -21,20 +21,24 @@ Route::get('/posts/{slug}', [PostController::class, 'show']);
 
 Route::get('/posts/{slug}/comments', [PostCommentController::class, 'show']);
 
+Route::get('/users/{id}/posts', [UserController::class, 'show']);
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.reset');
 Route::patch('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+->middleware(['signed'])
+->name('verification.verify');
 
 // Private Routes
 Route::group(['middleware' => ['auth:sanctum']], function() {
 
-    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::get('/user', function (Request $request) {
+        return $request->user()->load('profile');
+    });
 
-    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-    ->middleware(['signed'])
-    ->name('verification.verify');
     Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])->middleware(['throttle:6,1']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
