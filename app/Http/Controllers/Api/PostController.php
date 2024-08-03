@@ -16,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['user', 'user.profile', 'likes'])->latest()->paginate(9);
+        $posts = Post::with(['user', 'user.profile', 'likes'])->latest()->paginate(3);
 
         return response()->json([
             'message' => 'Data retrived successfully',
