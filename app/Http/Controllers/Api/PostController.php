@@ -86,9 +86,12 @@ class PostController extends Controller
      */
     public function update(UpdateStoreRequest $request, string $id)
     {
+
         $validated = $request->validated();
 
         $post = Post::findOrFail($id);
+
+        DB::beginTransaction();
 
         if ( $request->hasFile('thumbnail') ) {
 
@@ -99,7 +102,7 @@ class PostController extends Controller
                 File::delete($path);
             }
 
-            $file = $request->file('thumbnail');
+            $file = $request->file('thumbnail')[0];
             $extension = $file->getClientOriginalExtension();
             $filename = $request->user()->id . '_' . time() . '.' . $extension;
 
@@ -116,8 +119,13 @@ class PostController extends Controller
             'message' => $validated['message']
         ]);
 
+        DB::commit();
+
+        $posts = $post->where('user_id', $request->user()->id)->paginate(9);
+
         return response()->json([
             'message' => 'Post successfully updated',
+            'posts' => $posts
         ], 201);
 
     }

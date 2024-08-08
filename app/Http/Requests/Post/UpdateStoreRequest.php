@@ -22,10 +22,9 @@ class UpdateStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'thumbnail' => 'required|image|mimes:png,jpg,jpeg,avif,webp',
-            'title' => 'required|string|unique:posts,title',
-            'description' => 'required|min:50',
-            'message' => 'required|min:255',
+            'title' => 'string',
+            'description' => 'min:50',
+            'message' => 'min:255',
         ];
     }
 }
