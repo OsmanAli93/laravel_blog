@@ -7,7 +7,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\Post\StorePostRequest;
+use App\Http\Requests\Post\UpdateStoreRequest;
 
 class PostController extends Controller
 {
@@ -16,7 +18,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with(['user', 'user.profile', 'likes'])->latest()->paginate(3);
+        $posts = Post::with(['user', 'user.profile', 'likes'])->latest()->paginate(9);
 
         return response()->json([
             'message' => 'Data retrived successfully',
@@ -82,9 +84,42 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateStoreRequest $request, string $id)
     {
-        //
+        $validated = $request->validated();
+
+        $post = Post::findOrFail($id);
+
+        if ( $request->hasFile('thumbnail') ) {
+
+            $path = 'images/thumbnails/' . $post->thumbnail;
+
+            if ( File::exists($path) ) {
+
+                File::delete($path);
+            }
+
+            $file = $request->file('thumbnail');
+            $extension = $file->getClientOriginalExtension();
+            $filename = $request->user()->id . '_' . time() . '.' . $extension;
+
+            $post->update([
+                'thumbnail' => $filename
+            ]);
+
+            $file->move(public_path('images/thumbnails/'), $filename);
+        }
+
+        $post->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'message' => $validated['message']
+        ]);
+
+        return response()->json([
+            'message' => 'Post successfully updated',
+        ], 201);
+
     }
 
     /**
@@ -92,6 +127,7 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        return $id;
+
     }
 }
