@@ -135,7 +135,24 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        return $id;
+
+        $post = Post::findOrFail($id);
+
+        // $path = 'images/thumbnails/' . $post->thumbnail;
+
+        // if ( File::exists($path) ) {
+
+        //     File::delete($path);
+        // }
+
+        $post->delete();
+
+        $posts = $post->where('user_id', $post->user_id)->paginate(9);
+
+        return response()->json([
+            'message' => 'Post successfully deleted',
+            'posts' => $posts
+        ], 200);
 
     }
 }
