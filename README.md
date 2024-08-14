@@ -26,8 +26,8 @@ table relationship, model and so on . Every part of this project is sample code 
 * MYSQL
 * Laravel
 
-### SOURCE CODE FOR BACKEND
-[Link for backend source code](https://github.com/OsmanAli93/laravel_blog)
+### SOURCE CODE FOR FRONTEND
+[Link for frontend source code](https://github.com/OsmanAli93/nextjs_blog)
 
 ## Watch some of the examples
 
