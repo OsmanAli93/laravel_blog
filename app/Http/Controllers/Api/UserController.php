@@ -30,7 +30,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::with(['profile'])->find($id);
+        $user = User::with(['profile'])->findOrFail($id);
 
         if ( $user ) {
 
@@ -40,7 +40,10 @@ class UserController extends Controller
                 'message' => 'Data successfully retrieved',
                 'user' => $user,
                 'posts' => $posts,
-                'total' => $posts->count()
+                'total' => $posts->count(),
+                'followers' => $user->followers()->where('user_id', 8)->get(),
+                'followers_count' => $user->followers()->count(),
+                'following_count' => $user->following()->count(),
             ], 200);
         }
 

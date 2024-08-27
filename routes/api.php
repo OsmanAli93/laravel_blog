@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PostLikeController;
 use App\Http\Controllers\Api\PostCommentController;
@@ -39,6 +40,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         return $request->user()->load('profile');
     });
 
+
     Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])->middleware(['throttle:6,1']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -54,6 +56,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::delete('/posts/{slug}/likes', [PostLikeController::class, 'destroy']);
 
     Route::post('/posts/{slug}/comments', [PostCommentController::class, 'store']);
+
+    Route::post('/follow', [FollowController::class, 'follow']);
+    Route::post('/unfollow', [FollowController::class, 'unfollow']);
 
 });
 
